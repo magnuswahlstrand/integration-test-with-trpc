@@ -1,0 +1,8 @@
+[
+  {
+    "Detail": "{\"id\":\"c609952b-76a3-42e8-ae6e-defbb0453945\",\"amount\":9.99}",
+    "Source": "whatever",
+    "EventBusName": "dev-integration-test-with-trpc-EventBus",
+    "DetailType": "order.created"
+  }
+]

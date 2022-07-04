@@ -1,0 +1,181 @@
+{
+  "version": "18.0.0",
+  "artifacts": {
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "dev-integration-test-with-trpc-MyStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "dev-integration-test-with-trpc-MyStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "dev-integration-test-with-trpc-MyStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://601855032707/eu-west-1",
+      "properties": {
+        "templateFile": "dev-integration-test-with-trpc-MyStack.template.json",
+        "tags": {
+          "sst:app": "integration-test-with-trpc",
+          "sst:stage": "dev"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::601855032707:role/cdk-hnb659fds-deploy-role-601855032707-eu-west-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::601855032707:role/cdk-hnb659fds-cfn-exec-role-601855032707-eu-west-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-601855032707-eu-west-1/52865a28c58099b1a7eb7112b6d6e12b14d14876a4c210565b5f358d2bcec8dc.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "dev-integration-test-with-trpc-MyStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::601855032707:role/cdk-hnb659fds-lookup-role-601855032707-eu-west-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "dev-integration-test-with-trpc-MyStack.assets"
+      ],
+      "metadata": {
+        "/dev-integration-test-with-trpc-MyStack": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "sst:app",
+                "Value": "integration-test-with-trpc"
+              },
+              {
+                "Key": "sst:stage",
+                "Value": "dev"
+              }
+            ]
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/SSTMetadata": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SSTMetadata"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/EventBus/EventBus/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventBusE9ABF535"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/CreateOrderFn/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateOrderFnServiceRole7E513123"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/CreateOrderFn/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateOrderFnServiceRoleDefaultPolicyB5FFA7EE"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/CreateOrderFn/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateOrderFnDC0D005D"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/CreateOrderFn/FunctionUrl/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateOrderFnFunctionUrl6749BD79"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/CreateOrderFn/invoke-function-url": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateOrderFninvokefunctionurl75939F81"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/IntegrationTestEvents/Table": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "IntegrationTestEventsTable15510A68"
+            }
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/IntegrationTestEvents/Table/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IntegrationTestEventsTable15510A68"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/IntegrationEventWriterFn/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IntegrationEventWriterFnServiceRole847AD4FB"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/IntegrationEventWriterFn/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IntegrationEventWriterFnServiceRoleDefaultPolicyC94B76C3"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/IntegrationEventWriterFn/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "IntegrationEventWriterFn7E7EE23D"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/catchAll/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "catchAll2B422CD5"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/catchAll/AllowEventRuledevintegrationtestwithtrpcMyStackIntegrationEventWriterFnD199D0E9": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "catchAllAllowEventRuledevintegrationtestwithtrpcMyStackIntegrationEventWriterFnD199D0E96D7D8582"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/CreateOrderEndpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateOrderEndpoint"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/EventBusName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EventBusName"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/dev-integration-test-with-trpc-MyStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "dev-integration-test-with-trpc-MyStack"
+    }
+  }
+}

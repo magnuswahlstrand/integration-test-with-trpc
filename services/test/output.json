@@ -1,0 +1,6 @@
+{
+  "dev-integration-test-with-trpc-MyStack": {
+    "EventBusName": "dev-integration-test-with-trpc-EventBus",
+    "CreateOrderEndpoint": "https://5we4x4trazb45zx4gx36yrpppq0ewgsf.lambda-url.eu-west-1.on.aws/"
+  }
+}

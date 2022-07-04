@@ -1,0 +1,5 @@
+{
+  "name": "integration-test-with-trpc",
+  "region": "eu-west-1",
+  "main": "stacks/index.ts"
+}

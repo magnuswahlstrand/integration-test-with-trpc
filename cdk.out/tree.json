@@ -1,0 +1,726 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.1.43"
+        }
+      },
+      "dev-integration-test-with-trpc-MyStack": {
+        "id": "dev-integration-test-with-trpc-MyStack",
+        "path": "dev-integration-test-with-trpc-MyStack",
+        "children": {
+          "SSTMetadata": {
+            "id": "SSTMetadata",
+            "path": "dev-integration-test-with-trpc-MyStack/SSTMetadata",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnResource",
+              "version": "2.24.0"
+            }
+          },
+          "EventBus": {
+            "id": "EventBus",
+            "path": "dev-integration-test-with-trpc-MyStack/EventBus",
+            "children": {
+              "EventBus": {
+                "id": "EventBus",
+                "path": "dev-integration-test-with-trpc-MyStack/EventBus/EventBus",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "dev-integration-test-with-trpc-MyStack/EventBus/EventBus/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Events::EventBus",
+                      "aws:cdk:cloudformation:props": {
+                        "name": "dev-integration-test-with-trpc-EventBus"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_events.CfnEventBus",
+                      "version": "2.24.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_events.EventBus",
+                  "version": "2.24.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.1.43"
+            }
+          },
+          "CreateOrderFn": {
+            "id": "CreateOrderFn",
+            "path": "dev-integration-test-with-trpc-MyStack/CreateOrderFn",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "dev-integration-test-with-trpc-MyStack/CreateOrderFn/ServiceRole",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "dev-integration-test-with-trpc-MyStack/CreateOrderFn/ServiceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ],
+                        "tags": [
+                          {
+                            "key": "sst:app",
+                            "value": "integration-test-with-trpc"
+                          },
+                          {
+                            "key": "sst:stage",
+                            "value": "dev"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.24.0"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "dev-integration-test-with-trpc-MyStack/CreateOrderFn/ServiceRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "dev-integration-test-with-trpc-MyStack/CreateOrderFn/ServiceRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "xray:PutTraceSegments",
+                                    "xray:PutTelemetryRecords"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": "*"
+                                },
+                                {
+                                  "Action": "events:*",
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::GetAtt": [
+                                      "EventBusE9ABF535",
+                                      "Arn"
+                                    ]
+                                  }
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "CreateOrderFnServiceRoleDefaultPolicyB5FFA7EE",
+                            "roles": [
+                              {
+                                "Ref": "CreateOrderFnServiceRole7E513123"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.24.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.24.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.24.0"
+                }
+              },
+              "Code": {
+                "id": "Code",
+                "path": "dev-integration-test-with-trpc-MyStack/CreateOrderFn/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "dev-integration-test-with-trpc-MyStack/CreateOrderFn/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.24.0"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "dev-integration-test-with-trpc-MyStack/CreateOrderFn/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.24.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.24.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "dev-integration-test-with-trpc-MyStack/CreateOrderFn/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": "cdk-hnb659fds-assets-601855032707-eu-west-1",
+                      "s3Key": "773ba187a517447e6eda075ed905d1ea7f580a5e9ccd26bb96c66de189127691.zip"
+                    },
+                    "role": {
+                      "Fn::GetAtt": [
+                        "CreateOrderFnServiceRole7E513123",
+                        "Arn"
+                      ]
+                    },
+                    "environment": {
+                      "variables": {
+                        "EVENT_BUS_NAME": {
+                          "Ref": "EventBusE9ABF535"
+                        },
+                        "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+                      }
+                    },
+                    "ephemeralStorage": {
+                      "size": 512
+                    },
+                    "handler": "services/functions/create_order.handler",
+                    "memorySize": 1024,
+                    "runtime": "nodejs16.x",
+                    "tags": [
+                      {
+                        "key": "sst:app",
+                        "value": "integration-test-with-trpc"
+                      },
+                      {
+                        "key": "sst:stage",
+                        "value": "dev"
+                      }
+                    ],
+                    "timeout": 10,
+                    "tracingConfig": {
+                      "mode": "Active"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.24.0"
+                }
+              },
+              "FunctionUrl": {
+                "id": "FunctionUrl",
+                "path": "dev-integration-test-with-trpc-MyStack/CreateOrderFn/FunctionUrl",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "dev-integration-test-with-trpc-MyStack/CreateOrderFn/FunctionUrl/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::Url",
+                      "aws:cdk:cloudformation:props": {
+                        "authType": "NONE",
+                        "targetFunctionArn": {
+                          "Fn::GetAtt": [
+                            "CreateOrderFnDC0D005D",
+                            "Arn"
+                          ]
+                        },
+                        "cors": {
+                          "allowHeaders": [
+                            "*"
+                          ],
+                          "allowMethods": [
+                            "*"
+                          ],
+                          "allowOrigins": [
+                            "*"
+                          ]
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_lambda.CfnUrl",
+                      "version": "2.24.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.FunctionUrl",
+                  "version": "2.24.0"
+                }
+              },
+              "invoke-function-url": {
+                "id": "invoke-function-url",
+                "path": "dev-integration-test-with-trpc-MyStack/CreateOrderFn/invoke-function-url",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                  "aws:cdk:cloudformation:props": {
+                    "action": "lambda:InvokeFunctionUrl",
+                    "functionName": {
+                      "Fn::GetAtt": [
+                        "CreateOrderFnDC0D005D",
+                        "Arn"
+                      ]
+                    },
+                    "principal": "*",
+                    "functionUrlAuthType": "NONE"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                  "version": "2.24.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "version": "2.24.0"
+            }
+          },
+          "IntegrationTestEvents": {
+            "id": "IntegrationTestEvents",
+            "path": "dev-integration-test-with-trpc-MyStack/IntegrationTestEvents",
+            "children": {
+              "Table": {
+                "id": "Table",
+                "path": "dev-integration-test-with-trpc-MyStack/IntegrationTestEvents/Table",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "dev-integration-test-with-trpc-MyStack/IntegrationTestEvents/Table/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::DynamoDB::Table",
+                      "aws:cdk:cloudformation:props": {
+                        "keySchema": [
+                          {
+                            "attributeName": "eventId",
+                            "keyType": "HASH"
+                          }
+                        ],
+                        "attributeDefinitions": [
+                          {
+                            "attributeName": "eventId",
+                            "attributeType": "S"
+                          }
+                        ],
+                        "billingMode": "PAY_PER_REQUEST",
+                        "pointInTimeRecoverySpecification": {
+                          "pointInTimeRecoveryEnabled": true
+                        },
+                        "tableName": "dev-integration-test-with-trpc-IntegrationTestEvents",
+                        "tags": [
+                          {
+                            "key": "sst:app",
+                            "value": "integration-test-with-trpc"
+                          },
+                          {
+                            "key": "sst:stage",
+                            "value": "dev"
+                          }
+                        ],
+                        "timeToLiveSpecification": {
+                          "attributeName": "expiresAt",
+                          "enabled": true
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_dynamodb.CfnTable",
+                      "version": "2.24.0"
+                    }
+                  },
+                  "ScalingRole": {
+                    "id": "ScalingRole",
+                    "path": "dev-integration-test-with-trpc-MyStack/IntegrationTestEvents/Table/ScalingRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.24.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_dynamodb.Table",
+                  "version": "2.24.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.1.43"
+            }
+          },
+          "IntegrationEventWriterFn": {
+            "id": "IntegrationEventWriterFn",
+            "path": "dev-integration-test-with-trpc-MyStack/IntegrationEventWriterFn",
+            "children": {
+              "ServiceRole": {
+                "id": "ServiceRole",
+                "path": "dev-integration-test-with-trpc-MyStack/IntegrationEventWriterFn/ServiceRole",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "dev-integration-test-with-trpc-MyStack/IntegrationEventWriterFn/ServiceRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "lambda.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "managedPolicyArns": [
+                          {
+                            "Fn::Join": [
+                              "",
+                              [
+                                "arn:",
+                                {
+                                  "Ref": "AWS::Partition"
+                                },
+                                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                              ]
+                            ]
+                          }
+                        ],
+                        "tags": [
+                          {
+                            "key": "sst:app",
+                            "value": "integration-test-with-trpc"
+                          },
+                          {
+                            "key": "sst:stage",
+                            "value": "dev"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.24.0"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "dev-integration-test-with-trpc-MyStack/IntegrationEventWriterFn/ServiceRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "dev-integration-test-with-trpc-MyStack/IntegrationEventWriterFn/ServiceRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "xray:PutTraceSegments",
+                                    "xray:PutTelemetryRecords"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": "*"
+                                },
+                                {
+                                  "Action": "dynamodb:*",
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "IntegrationTestEventsTable15510A68",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Fn::GetAtt": [
+                                              "IntegrationTestEventsTable15510A68",
+                                              "Arn"
+                                            ]
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "IntegrationEventWriterFnServiceRoleDefaultPolicyC94B76C3",
+                            "roles": [
+                              {
+                                "Ref": "IntegrationEventWriterFnServiceRole847AD4FB"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.24.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.24.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.24.0"
+                }
+              },
+              "Code": {
+                "id": "Code",
+                "path": "dev-integration-test-with-trpc-MyStack/IntegrationEventWriterFn/Code",
+                "children": {
+                  "Stage": {
+                    "id": "Stage",
+                    "path": "dev-integration-test-with-trpc-MyStack/IntegrationEventWriterFn/Code/Stage",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.AssetStaging",
+                      "version": "2.24.0"
+                    }
+                  },
+                  "AssetBucket": {
+                    "id": "AssetBucket",
+                    "path": "dev-integration-test-with-trpc-MyStack/IntegrationEventWriterFn/Code/AssetBucket",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_s3.BucketBase",
+                      "version": "2.24.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3_assets.Asset",
+                  "version": "2.24.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "dev-integration-test-with-trpc-MyStack/IntegrationEventWriterFn/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                  "aws:cdk:cloudformation:props": {
+                    "code": {
+                      "s3Bucket": "cdk-hnb659fds-assets-601855032707-eu-west-1",
+                      "s3Key": "6d1b88e7a831a9230fab4ace8e8e0fad0a5922ef73979be3f976b3f30288ee11.zip"
+                    },
+                    "role": {
+                      "Fn::GetAtt": [
+                        "IntegrationEventWriterFnServiceRole847AD4FB",
+                        "Arn"
+                      ]
+                    },
+                    "environment": {
+                      "variables": {
+                        "DYNAMODB_TABLE_NAME": {
+                          "Ref": "IntegrationTestEventsTable15510A68"
+                        },
+                        "EXPIRY_TIME_MINUTES": "15",
+                        "AWS_NODEJS_CONNECTION_REUSE_ENABLED": "1"
+                      }
+                    },
+                    "ephemeralStorage": {
+                      "size": 512
+                    },
+                    "handler": "services/functions/test_event_writer.handler",
+                    "memorySize": 1024,
+                    "runtime": "nodejs16.x",
+                    "tags": [
+                      {
+                        "key": "sst:app",
+                        "value": "integration-test-with-trpc"
+                      },
+                      {
+                        "key": "sst:stage",
+                        "value": "dev"
+                      }
+                    ],
+                    "timeout": 10,
+                    "tracingConfig": {
+                      "mode": "Active"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnFunction",
+                  "version": "2.24.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_lambda.Function",
+              "version": "2.24.0"
+            }
+          },
+          "catchAll": {
+            "id": "catchAll",
+            "path": "dev-integration-test-with-trpc-MyStack/catchAll",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "dev-integration-test-with-trpc-MyStack/catchAll/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Events::Rule",
+                  "aws:cdk:cloudformation:props": {
+                    "eventBusName": {
+                      "Ref": "EventBusE9ABF535"
+                    },
+                    "eventPattern": {
+                      "detail-type": [
+                        "order.created"
+                      ]
+                    },
+                    "name": "dev-integration-test-with-trpc-catchAll",
+                    "state": "ENABLED",
+                    "targets": [
+                      {
+                        "id": "Target0",
+                        "arn": {
+                          "Fn::GetAtt": [
+                            "IntegrationEventWriterFn7E7EE23D",
+                            "Arn"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_events.CfnRule",
+                  "version": "2.24.0"
+                }
+              },
+              "AllowEventRuledevintegrationtestwithtrpcMyStackIntegrationEventWriterFnD199D0E9": {
+                "id": "AllowEventRuledevintegrationtestwithtrpcMyStackIntegrationEventWriterFnD199D0E9",
+                "path": "dev-integration-test-with-trpc-MyStack/catchAll/AllowEventRuledevintegrationtestwithtrpcMyStackIntegrationEventWriterFnD199D0E9",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Lambda::Permission",
+                  "aws:cdk:cloudformation:props": {
+                    "action": "lambda:InvokeFunction",
+                    "functionName": {
+                      "Fn::GetAtt": [
+                        "IntegrationEventWriterFn7E7EE23D",
+                        "Arn"
+                      ]
+                    },
+                    "principal": "events.amazonaws.com",
+                    "sourceArn": {
+                      "Fn::GetAtt": [
+                        "catchAll2B422CD5",
+                        "Arn"
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_lambda.CfnPermission",
+                  "version": "2.24.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_events.Rule",
+              "version": "2.24.0"
+            }
+          },
+          "CreateOrderEndpoint": {
+            "id": "CreateOrderEndpoint",
+            "path": "dev-integration-test-with-trpc-MyStack/CreateOrderEndpoint",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.24.0"
+            }
+          },
+          "EventBusName": {
+            "id": "EventBusName",
+            "path": "dev-integration-test-with-trpc-MyStack/EventBusName",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.24.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "dev-integration-test-with-trpc-MyStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "dev-integration-test-with-trpc-MyStack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.24.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.1.43"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.24.0"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.24.0"
+    }
+  }
+}
