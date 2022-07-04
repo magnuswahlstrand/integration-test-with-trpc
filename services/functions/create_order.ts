@@ -1,21 +1,26 @@
 import {EventBridgeClient, PutEventsCommand} from "@aws-sdk/client-eventbridge";
 import {z} from "zod";
+import {OrderType} from "../model";
+import {v4 as uuid} from 'uuid';
 
 const client = new EventBridgeClient({
     region: "eu-west-1"
 })
 
-
-const CreateOrder = z.object({
-    id: z.string().uuid(),
+const CreateOrderRequest = z.object({
     amount: z.number(),
 });
 
 export const handler = async (req: any) => {
-    const order = CreateOrder.parse(req)
+    console.log(req.body)
+    const createReq = CreateOrderRequest.parse(JSON.parse(req.body))
+
+    const order: OrderType = {
+        id: uuid(),
+        amount: createReq.amount,
+    }
 
     console.log(process.env.EVENT_BUS_NAME)
-    // console.log(process.env)
     await client.send(
         new PutEventsCommand({
             Entries: [
@@ -28,18 +33,6 @@ export const handler = async (req: any) => {
             ]
         })
     )
-    console.log(JSON.stringify(
-        new PutEventsCommand({
-            Entries: [
-                {
-                    EventBusName: process.env.EVENT_BUS_NAME,
-                    Detail: JSON.stringify(order),
-                    DetailType: "order.created",
-                    Source: "aws.lambda",
-                }
-            ]
-        })
-    ))
 
     return order
 };
