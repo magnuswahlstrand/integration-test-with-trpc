@@ -58,7 +58,6 @@ const massiveEvent = {
 
 // Questions
 // - Should I split this into two sections? 1 API call, 2 fetch published events?
-// - How do I retry until success? It can take a while before events are published, and available in the fetchCreatedEvents call
 test('createOrder returns an order, order.created event is published', async () => {
     const amount = 123
 
@@ -76,6 +75,9 @@ test('createOrder returns an order, order.created event is published', async () 
 
     // Act
     const eventResp = await fetchCreatedEvents(massiveEvent)
+
+    // Assert - This doesn't actually return events at the moment :-)
+    // - How do I retry until success? It can take a while before events are published, and available in the fetchCreatedEvents call
     const eventResponse = z.object({
             id: z.literal('hej')
         }
