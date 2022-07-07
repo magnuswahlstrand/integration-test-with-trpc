@@ -3,33 +3,52 @@ import {EventBus, Function, StackContext, Table} from "@serverless-stack/resourc
 export function MyStack({stack}: StackContext) {
     const bus = new EventBus(stack, "EventBus", {})
 
-    const createOrder = new Function(stack, "CreateOrderFn", {
-        handler: "functions/create_order.handler",
+
+    const eventBridgeAdapter = new Function(stack, "EventBridgeAdapter", {
+        handler: "functions/eventbridge_adapter.handler",
         environment: {
             EVENT_BUS_NAME: bus.eventBusName
         },
         permissions: [bus],
+    });
+
+    const orderTable = new Table(stack, 'OrderTable', {
+        fields: {
+            id: "string",
+        },
+        primaryIndex: {partitionKey: "id"},
+        consumers: {
+            adapter: eventBridgeAdapter,
+        },
+        stream: true
+
+    })
+
+    const createOrder = new Function(stack, "CreateOrderFn", {
+        handler: "functions/create_order.handler",
+        environment: {
+            TABLE_NAME: orderTable.tableName,
+        },
+        permissions: [orderTable],
         url: true
     });
 
 
-    // Integration test resources
+    /* Integration test resources */
+
     const testTable = new Table(stack, 'IntegrationTestEvents', {
         fields: {
-            eventId: "string",
+            PK: "string",
         },
-        primaryIndex: {partitionKey: "eventId"},
-        timeToLiveAttribute: "expiresAt",
+        primaryIndex: {partitionKey: "PK"},
     })
 
     const eventWriterFn = new Function(stack, "IntegrationEventWriterFn", {
         handler: "functions/test_event_writer.handler",
         environment: {
-            DYNAMODB_TABLE_NAME: testTable.tableName,
-            EXPIRY_TIME_MINUTES: '15'
+            TABLE_NAME: testTable.tableName,
         },
         permissions: [testTable],
-        url: true
     })
 
     bus.addRules(stack, {
@@ -43,7 +62,6 @@ export function MyStack({stack}: StackContext) {
 
     stack.addOutputs({
         CreateOrderEndpoint: createOrder.url ?? "",
-        EventWriterFnEndpoint: eventWriterFn.url ?? "",
         EventBusName: bus.eventBusName,
         TestEventTable: testTable.tableName,
     });

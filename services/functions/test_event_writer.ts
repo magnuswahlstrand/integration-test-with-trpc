@@ -1,47 +1,29 @@
 import {EventBridgeHandler} from "aws-lambda";
 import {DynamoDB} from "aws-sdk";
-import {z} from "zod";
-import {EventBridgeEvent} from "../model";
+
+const tableName = process.env.TABLE_NAME ?? ""
 
 const dynamoDb = new DynamoDB.DocumentClient();
 
-type Detail = {
+type OrderEvent = {
     id: string
+    amount: number
 }
 
-type Resp = {
-    id: string
-}
+type eventTypes = "order.created" | "order.fulfilled"
+type events = OrderEvent
 
-const tableName = process.env.DYNAMODB_TABLE_NAME ?? ""
-
-export const handler: EventBridgeHandler<string, Detail, Resp> = async (evt: unknown) => {
-    if (typeof evt !== "object" || !evt) {
-        throw "invalid event received"
-    }
-    console.log("BEFORE")
-    console.log(evt)
-
-
-    const req = EventBridgeEvent.passthrough().parse(evt);
-
-    console.log("AFTER")
-
-    const fullEvent = {
-        ...evt,
-        eventId: `${req["detail-type"]}#${req.detail.id}`,
-        // expiresAt: Date.now() + 1000 * 60 * 15,
-        expiresAt: Date.now() - 1000 * 3 * 2,
-    }
-
-    console.log(fullEvent)
+export const handler: EventBridgeHandler<eventTypes, events, void> = async (evt) => {
+    // e.g. order.created#a42db13b-5ea0-46f3-8903-93eee711c8fd
+    const PK = `${evt["detail-type"]}#${evt.detail.id}`
 
     const putParams = {
         TableName: tableName,
-        Item: fullEvent
+        Item: {
+            PK: PK,
+            event: evt,
+        }
     };
 
-    const ret = await dynamoDb.put(putParams).promise();
-
-    return {id: "hej"};
+    await dynamoDb.put(putParams).promise();
 };

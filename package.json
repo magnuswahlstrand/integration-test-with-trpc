@@ -9,7 +9,7 @@
     "remove": "sst remove",
     "console": "sst console",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --reporter=verbose",
     "synthesize": "sst cdk synthesize"
   },
   "devDependencies": {

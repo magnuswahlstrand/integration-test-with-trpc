@@ -3,6 +3,6 @@
   "include": ["stacks"],
   "compilerOptions": {
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
   }
 }
