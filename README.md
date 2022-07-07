@@ -35,3 +35,5 @@ Get routed to the default message bus! Hard to discover.
 eventbridge-cli
 npx sst deploy --outputs-file services/test/output.json
 ```
+
+https://stackoverflow.com/questions/38213668/promise-retry-design-patterns

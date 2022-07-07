@@ -45,5 +45,6 @@ export function MyStack({stack}: StackContext) {
         CreateOrderEndpoint: createOrder.url ?? "",
         EventWriterFnEndpoint: eventWriterFn.url ?? "",
         EventBusName: bus.eventBusName,
+        TestEventTable: testTable.tableName,
     });
 }

@@ -28,7 +28,7 @@ export const handler = async (req: any) => {
                     EventBusName: process.env.EVENT_BUS_NAME,
                     Detail: JSON.stringify(order),
                     DetailType: "order.created",
-                    Source: "aws.lambda",
+                    Source: "create_order",
                 }
             ]
         })
