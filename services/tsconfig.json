@@ -1,11 +1,14 @@
 {
   "extends": "../tsconfig.json",
-  "include": ["functions"],
+  "include": [
+    "test-utils"
+  ],
   "compilerOptions": {
     "module": "esnext",
     "target": "es2017",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "."
+    "baseUrl": ".",
+    "resolveJsonModule": true,
   }
 }

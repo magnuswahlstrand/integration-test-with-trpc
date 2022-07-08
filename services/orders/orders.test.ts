@@ -1,27 +1,12 @@
 import {describe, expect, it, test} from "vitest";
-import stackOutput from "./output.json"
+import waitForExpect from "wait-for-expect"
+import stackOutput from "../output.json"
+import {getPublishedEvent} from "../test-utils/events"
 
-import {DynamoDB} from "aws-sdk";
-
-const dynamoDb = new DynamoDB.DocumentClient({
-    region: "eu-west-1",
-});
+waitForExpect.defaults.timeout = 2000;
 
 const createOrderEndpoint = stackOutput["dev-integration-test-with-trpc-MyStack"].CreateOrderEndpoint
 const fulfillOrderEndpoint = stackOutput["dev-integration-test-with-trpc-MyStack"].FulfillOrderEndpoint
-const testEventsTable = stackOutput["dev-integration-test-with-trpc-MyStack"].TestEventTable
-
-async function waitFor<T>(fn: () => Promise<T>, max_retries = 10, delay = 200) {
-    for (let i = 0; i < max_retries; i++) {
-        try {
-            return await fn()
-        } catch (e) {
-            await new Promise((r) => setTimeout(r, delay));
-        }
-    }
-    return Promise.reject<T>(`max number of retries (${max_retries}) reached`)
-}
-
 
 async function createOrder(amount: number): Promise<{ id: string; amount: number }> {
     return fetch(createOrderEndpoint, {
@@ -36,33 +21,6 @@ async function fulfillOrder(id: string, fulfilled_by: string): Promise<{ id: str
         body: JSON.stringify({id: id, fulfilled_by: fulfilled_by}),
     }).then(r => r.json())
 }
-
-
-const getTestEvent = async (eventType: string, entityId: string) => {
-    const getParams = {
-        TableName: testEventsTable,
-        Key: {
-            PK: `${eventType}#${entityId}`,
-        },
-    };
-
-    const ret = await dynamoDb.get(getParams).promise()
-
-    const item = ret.Item
-    if (!item) {
-        throw 'event not found'
-    }
-
-    return {
-        "type": item["event"]["detail-type"],
-        "detail": item["event"]["detail"],
-    }
-}
-
-const waitForTestEvent = async (eventType, eventId) =>
-    await waitFor(() =>
-        getTestEvent(eventType, eventId)
-    )
 
 describe("orders", () => {
     test.concurrent('create', async () => {
@@ -83,10 +41,26 @@ describe("orders", () => {
             );
         })
 
+        await waitForExpect(async () => {
+            console.log("looking for", order.id)
+            const evt = await getPublishedEvent("order.created", order.id)
+
+            expect(evt.type).toBe("order.created")
+            expect(evt.detail["id"]).toBe(order.id)
+            const expected_object = expect.objectContaining({
+                type: "order.created",
+                detail: expect.objectContaining({
+                    id: order.id
+                }),
+            })
+
+            expect(evt).toEqual(expected_object);
+        })
+
         it('event is published: "order.created"', async () => {
             console.log("looking for", order.id)
             const evt = await waitFor(() =>
-                getTestEvent("order.created", order.id),
+                getPublishedEvent("order.created", order.id),
             )
 
             expect(evt.type).toBe("order.created")
@@ -114,17 +88,21 @@ describe("orders", () => {
         })
 
         it('event is published: "order.created"', async () => {
-            const event = await waitForTestEvent("order.created", order.id)
+            await waitForExpect(async () => {
+                const event = await getPublishedEvent("order.created", order.id)
 
-            expect(event.type).toBe("order.created")
-            expect(event.detail["id"]).toBe(order.id)
+                expect(event.type).toBe("order.created")
+                expect(event.detail["id"]).toBe(order.id)
+            })
         })
 
         it('event is published: "order.fulfilled"', async () => {
-            const event = await waitForTestEvent("order.fulfilled", order.id)
+            await waitForExpect(async () => {
+                const event = await getPublishedEvent("order.fulfilled", order.id)
 
-            expect(event.type).toBe("order.fulfilled")
-            expect(event.detail["id"]).toBe(order.id)
+                expect(event.type).toBe("order.fulfilled")
+                expect(event.detail["id"]).toBe(order.id)
+            })
         })
     })
 })

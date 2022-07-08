@@ -5,7 +5,7 @@ export function MyStack({stack}: StackContext) {
 
 
     const eventBridgeAdapter = new Function(stack, "EventBridgeAdapter", {
-        handler: "functions/eventbridge_adapter.handler",
+        handler: "orders/eventbridgeAdapter.handler",
         environment: {
             EVENT_BUS_NAME: bus.eventBusName
         },
@@ -22,7 +22,7 @@ export function MyStack({stack}: StackContext) {
     })
 
     const createOrder = new Function(stack, "CreateOrderFn", {
-        handler: "functions/create_order.handler",
+        handler: "orders/create.handler",
         environment: {
             TABLE_NAME: orderTable.tableName,
         },
@@ -31,7 +31,7 @@ export function MyStack({stack}: StackContext) {
     });
 
     const fulfillOrder = new Function(stack, "FulfillOrderFn", {
-        handler: "functions/fulfill_order.handler",
+        handler: "orders/fulfill.handler",
         environment: {
             TABLE_NAME: orderTable.tableName,
         },
@@ -49,7 +49,7 @@ export function MyStack({stack}: StackContext) {
     })
 
     const eventWriterFn = new Function(stack, "IntegrationEventWriterFn", {
-        handler: "functions/integration_test_writer.handler",
+        handler: "test-utils/integrationTestWriter.handler",
         environment: {
             TABLE_NAME: testTable.tableName,
         },

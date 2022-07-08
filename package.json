@@ -26,6 +26,7 @@
   ],
   "dependencies": {
     "@aws-sdk/client-eventbridge": "^3.121.0",
-    "electrodb": "^1.10.2"
+    "electrodb": "^1.10.2",
+    "wait-for-expect": "^3.0.2"
   }
 }
