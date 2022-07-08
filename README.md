@@ -40,3 +40,16 @@ https://stackoverflow.com/questions/38213668/promise-retry-design-patterns
 
 
 describe.concurrent
+
+
+
+```
+https://www.emgoto.com/jest-partial-match/
+    expect(nestedObject).toEqual(
+        expect.objectContaining({
+            payload: expect.objectContaining({
+                important: 'important',
+            }),
+        })
+    );
+```

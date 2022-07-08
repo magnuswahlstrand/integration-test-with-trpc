@@ -17,11 +17,8 @@ export function MyStack({stack}: StackContext) {
             id: "string",
         },
         primaryIndex: {partitionKey: "id"},
-        consumers: {
-            adapter: eventBridgeAdapter,
-        },
+        consumers: {adapter: eventBridgeAdapter},
         stream: true
-
     })
 
     const createOrder = new Function(stack, "CreateOrderFn", {
@@ -33,9 +30,17 @@ export function MyStack({stack}: StackContext) {
         url: true
     });
 
+    const fulfillOrder = new Function(stack, "FulfillOrderFn", {
+        handler: "functions/fulfill_order.handler",
+        environment: {
+            TABLE_NAME: orderTable.tableName,
+        },
+        permissions: [orderTable],
+        url: true
+    });
+
 
     /* Integration test resources */
-
     const testTable = new Table(stack, 'IntegrationTestEvents', {
         fields: {
             PK: "string",
@@ -44,7 +49,7 @@ export function MyStack({stack}: StackContext) {
     })
 
     const eventWriterFn = new Function(stack, "IntegrationEventWriterFn", {
-        handler: "functions/test_event_writer.handler",
+        handler: "functions/integration_test_writer.handler",
         environment: {
             TABLE_NAME: testTable.tableName,
         },
@@ -53,15 +58,17 @@ export function MyStack({stack}: StackContext) {
 
     bus.addRules(stack, {
         "catchAll": {
-            pattern: {detailType: ["order.created"]},
+            pattern: {
+                detail: {id: [{exists: true}]}
+            },
             targets: {
                 IntegrationTestFn: eventWriterFn,
             },
         }
     })
-
     stack.addOutputs({
         CreateOrderEndpoint: createOrder.url ?? "",
+        FulfillOrderEndpoint: fulfillOrder.url ?? "",
         EventBusName: bus.eventBusName,
         TestEventTable: testTable.tableName,
     });

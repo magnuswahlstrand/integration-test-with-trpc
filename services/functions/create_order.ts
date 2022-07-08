@@ -17,10 +17,13 @@ export const handler: APIGatewayProxyHandlerV2 = async (req) => {
     console.log("received", typeof orderReq)
 
 
+    const now = new Date().toISOString()
     const order = {
         id: uuid(),
         amount: orderReq.amount,
-        state: "created"
+        state: "created",
+        created_at: now,
+        updated_at: now
     }
 
     console.log("put")
@@ -33,19 +36,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (req) => {
 
     await dynamoDb.put(putParams).promise();
 
-    // await client.send(
-    //     new PutEventsCommand({
-    //         Entries: [
-    //             {
-    //                 EventBusName: process.env.EVENT_BUS_NAME,
-    //                 DetailType: "order.created",
-    //
-    //                 Detail: JSON.stringify(order),
-    //                 Source: "create_order_fn",
-    //             }
-    //         ]
-    //     })
-    // )
-
-    return order
+    return {
+        statusCode: 200,
+        body: JSON.stringify(order),
+    }
 };
